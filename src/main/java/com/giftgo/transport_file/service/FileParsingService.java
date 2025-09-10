@@ -27,7 +27,7 @@ public class FileParsingService {
                 }
             }
         } catch (IOException e) {
-            System.out.println("Error reading file");
+            logger.error("Error while parsing file", e);
         }
     }
 }
