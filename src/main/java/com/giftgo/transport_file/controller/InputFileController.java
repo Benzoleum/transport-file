@@ -1,9 +1,36 @@
 package com.giftgo.transport_file.controller;
 
+import com.giftgo.transport_file.service.FileParsingService;
+import com.giftgo.transport_file.service.FileValidationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 public class InputFileController {
+    private static final Logger logger = LoggerFactory.getLogger(InputFileController.class);
+    private FileValidationService fileValidationService;
+    private FileParsingService fileParsingService;
+
+    @Autowired
+    public InputFileController(FileValidationService fileValidationService, FileParsingService fileParsingService) {
+        this.fileValidationService = fileValidationService;
+        this.fileParsingService = fileParsingService;
+    }
+
+    @PostMapping("/api/v1/upload")
+    public String uploadFile(@RequestParam("inputFile") MultipartFile file) throws HttpMediaTypeNotSupportedException {
+        logger.info("Received file");
+        fileValidationService.validateIncomingFile(file);
+        fileParsingService.parseIncomingFile(file);
+
+        return "Uploaded";
+    }
 
 
 }
