@@ -2,6 +2,8 @@ spring:
   application:
     name: transport-file
 
+fileValidation: true
+
 logging:
   level:
     root: INFO

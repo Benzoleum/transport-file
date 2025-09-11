@@ -2,6 +2,7 @@ package com.giftgo.transport_file.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -9,8 +10,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileValidationService {
     private static final Logger logger = LoggerFactory.getLogger(FileValidationService.class);
 
-    public boolean incomingFileIsValid(MultipartFile file, boolean skipValidation) {
-        if (!skipValidation) {
+    //fetches the value from applicationl.yml file. True by default.
+    @Value("${fileValidation:true}")
+    private boolean fileValidation;
+
+    public boolean incomingFileIsValid(MultipartFile file) {
+        if (fileValidation) {
             logger.info("Validating file");
             String fileName = "";
             String contentType = "";
