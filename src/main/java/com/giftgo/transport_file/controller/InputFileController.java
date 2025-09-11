@@ -27,9 +27,8 @@ public class InputFileController {
     }
 
     @PostMapping("/api/v1/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("inputFile") MultipartFile file) {
+    public ResponseEntity<String> receiveInputTxt(@RequestParam("inputFile") MultipartFile file) {
         logger.info("Received file");
-        //TODO add flag for file validation
         if (fileValidationService.incomingFileIsValid(file)) {
            jsonFileOutputService.writeJsonToFile(fileParsingService.parseIncomingFile(file));
         } else {
