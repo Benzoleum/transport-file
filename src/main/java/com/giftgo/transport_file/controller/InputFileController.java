@@ -30,7 +30,7 @@ public class InputFileController {
     public ResponseEntity<String> uploadFile(@RequestParam("inputFile") MultipartFile file) {
         logger.info("Received file");
         //TODO add flag for file validation
-        if (fileValidationService.incomingFileIsValid(file, false)) {
+        if (fileValidationService.incomingFileIsValid(file)) {
            jsonFileOutputService.writeJsonToFile(fileParsingService.parseIncomingFile(file));
         } else {
             return ResponseEntity.badRequest().body("Invalid file");

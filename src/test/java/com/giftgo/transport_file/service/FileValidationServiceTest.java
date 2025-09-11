@@ -23,16 +23,16 @@ public class FileValidationServiceTest {
 
     @Test
     public void testValidIncomingFileIsValid() {
-        assertTrue(fileValidationService.incomingFileIsValid(validFile, false));
+        assertTrue(fileValidationService.incomingFileIsValid(validFile));
     }
 
     @Test
     public void testFileWithInvalidExtension() {
-        assertFalse(fileValidationService.incomingFileIsValid(invalidExtension, false));
+        assertFalse(fileValidationService.incomingFileIsValid(invalidExtension));
     }
 
     @Test
     public void testFileWithInvalidContentType() {
-        assertFalse(fileValidationService.incomingFileIsValid(invalidContentType, false));
+        assertFalse(fileValidationService.incomingFileIsValid(invalidContentType));
     }
 }
