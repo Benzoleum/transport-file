@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: transport-file
+
+logging:
+  level:
+    root: INFO
+  file:
+    name: ./logs/application.log
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 7
+      total-size-cap: 100MB
