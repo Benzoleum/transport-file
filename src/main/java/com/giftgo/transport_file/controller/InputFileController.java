@@ -1,9 +1,6 @@
 package com.giftgo.transport_file.controller;
 
-import com.giftgo.transport_file.dto.Entity;
-import com.giftgo.transport_file.service.FileParsingService;
-import com.giftgo.transport_file.service.FileValidationService;
-import com.giftgo.transport_file.service.JsonFileOutputService;
+import com.giftgo.transport_file.service.ApplicationOrchestratorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,48 +14,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.List;
-
 @RestController
 public class InputFileController {
     private static final Logger logger = LoggerFactory.getLogger(InputFileController.class);
-    private FileValidationService fileValidationService;
-    private FileParsingService fileParsingService;
-    private JsonFileOutputService jsonFileOutputService;
+    private ApplicationOrchestratorService applicationOrchestratorService;
 
     @Autowired
-    public InputFileController(FileValidationService fileValidationService, FileParsingService fileParsingService, JsonFileOutputService jsonFileOutputService) {
-        this.fileValidationService = fileValidationService;
-        this.fileParsingService = fileParsingService;
-        this.jsonFileOutputService = jsonFileOutputService;
+    public InputFileController(ApplicationOrchestratorService applicationOrchestratorService) {
+        this.applicationOrchestratorService = applicationOrchestratorService;
     }
 
     @PostMapping("/api/v1/upload")
-    public ResponseEntity<?> receiveInputTxt(@RequestParam("inputFile") MultipartFile file) throws IOException, URISyntaxException {
+    public ResponseEntity<?> receiveInputTxt(@RequestParam("inputFile") MultipartFile file) {
         logger.info("Received file");
-        if (fileValidationService.incomingFileIsValid(file)) {
-            List<Entity> entities = fileParsingService.parseIncomingFile(file);
-            // I_AM_A_TEAPOT
-            if (entities == null) {
-                return ResponseEntity.unprocessableEntity().body("The input file contains invalid data");
-            }
+        ByteArrayResource resource = applicationOrchestratorService.processFile(file);
 
-            ByteArrayResource resource = jsonFileOutputService.writeJsonToByteArrayResource(entities);
-            if (resource != null) {
-                return ResponseEntity.ok()
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=OutcomeFile.json")
-                        .contentLength(resource.contentLength())
-                        .body(resource);
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while writing JSON to the output file");
-            }
+        if (resource != null) {
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=OutcomeFile.json").contentLength(resource.contentLength()).body(resource);
         } else {
-            return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body("The incoming request is invalid");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON).body("Error while processing file");
         }
-//        return ResponseEntity.ok("File received");
     }
-
 }

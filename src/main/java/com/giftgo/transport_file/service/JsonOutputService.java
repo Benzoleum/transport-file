@@ -8,15 +8,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 
 @Service
-public class JsonFileOutputService {
-    private static final Logger logger = LoggerFactory.getLogger(JsonFileOutputService.class);
+public class JsonOutputService {
+    private static final Logger logger = LoggerFactory.getLogger(JsonOutputService.class);
 
     public ByteArrayResource writeJsonToByteArrayResource(List<Entity> entity) {
         if (entity != null) {
