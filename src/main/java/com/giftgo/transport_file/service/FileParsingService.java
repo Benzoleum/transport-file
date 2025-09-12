@@ -29,19 +29,42 @@ public class FileParsingService {
                 String fullLine;
                 while ((fullLine = reader.readLine()) != null) {
                     String[] line = fullLine.split("\\|");
-                    UUID uuid = UUID.fromString(line[0]);
-                    String id = line[1];
-                    String name = line[2];
-                    String likes = line[3];
-                    String transport = line[4];
-                    double avgSpeed = Double.parseDouble(line[5]);
-                    double topSpeed = Double.parseDouble(line[6]);
+                    if (line.length != 7) {
+                        logger.error("The data format is invalid. Expected 7 columns, got {}", line.length);
+                        return null;
+                    }
+                    UUID uuid;
+                    String id;
+                    String name;
+                    String likes;
+                    String transport;
+                    double avgSpeed;
+                    double topSpeed;
+
+                    // Ideally we might want to skip invalid lines and proceed with existing ones, logging invalid entries
+                    try {
+                        uuid = UUID.fromString(line[0]);
+                        id = line[1];
+                        name = line[2];
+                        likes = line[3];
+                        transport = line[4];
+                        avgSpeed = Double.parseDouble(line[5]);
+                        topSpeed = Double.parseDouble(line[6]);
+                    } catch (Exception e) {
+                        logger.error("Incoming data is invalid");
+                        return null;
+                    }
                     logger.trace("UUID: {}, ID: {}, Name: {}, Likes: {}, Transport: {}, Avg Speed: {}, Top Speed: {}", uuid, id, name, likes, transport, avgSpeed, topSpeed);
+                    // Create POJOs from lines in the file and add to a list for further processing
                     entities.add(new Entity(uuid, id, name, likes, transport, avgSpeed, topSpeed));
                 }
+            } else {
+                logger.error("No data to parse");
+                return null;
             }
         } catch (IOException e) {
             logger.error("Error while parsing file", e);
+            return null;
         }
         return entities;
     }

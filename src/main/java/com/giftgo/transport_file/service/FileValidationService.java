@@ -40,6 +40,7 @@ public class FileValidationService {
             }
 
             // Limiting the file size to 50MB. Can be increased, but file parsing logic would have to be changed to avoid CPU bottlenecks and memory issues
+            // Potentially can be a flag in the application.yml to increase/decrease the limit based on available resources
             if (file.getSize() != 0 && file.getSize() < 50000000) {
                 fileSize = file.getSize();
             } else {

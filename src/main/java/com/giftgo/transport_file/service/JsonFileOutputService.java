@@ -14,8 +14,12 @@ public class JsonFileOutputService {
     private static final Logger logger = LoggerFactory.getLogger(JsonFileOutputService.class);
 
     public void writeJsonToFile(List<Entity> entity) {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create(); // this will exclude fields without @Expose annotation
-        String json = gson.toJson(entity);
-        logger.trace("JSON: {}", json);
+        if (entity != null) {
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create(); // this will exclude fields without @Expose annotation
+            String json = gson.toJson(entity);
+            logger.trace("JSON: {}", json);
+        } else {
+            logger.error("No data to write to file");
+        }
     }
 }
