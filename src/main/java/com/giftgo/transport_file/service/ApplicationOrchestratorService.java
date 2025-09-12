@@ -1,6 +1,10 @@
 package com.giftgo.transport_file.service;
 
 import com.giftgo.transport_file.dto.Entity;
+import com.giftgo.transport_file.exceptions.EmptyInputFileException;
+import com.giftgo.transport_file.exceptions.InvalidDataInFileException;
+import com.giftgo.transport_file.exceptions.InvalidFileReceivedException;
+import com.giftgo.transport_file.exceptions.WritingToJsonException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,19 +38,19 @@ public class ApplicationOrchestratorService {
                         return resource;
                     } else {
                         logger.error("Error while writing JSON");
-                        return null;
+                        throw new WritingToJsonException("Error while writing JSON. Please try again later");
                     }
                 } else {
                     logger.warn("File contains invalid data");
-                    return null;
+                    throw new InvalidDataInFileException("The file contains invalid data. Please check the file and try again");
                 }
             } else {
                 logger.warn("File is invalid");
-                return null;
+                throw new InvalidFileReceivedException("The file is invalid. Please check the file format and try again");
             }
         } else {
             logger.warn("No file to process");
-            return null;
+            throw new EmptyInputFileException("Received empty file");
         }
     }
 

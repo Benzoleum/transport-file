@@ -30,7 +30,7 @@ public class FileParsingService {
                 while ((fullLine = reader.readLine()) != null) {
                     String[] line = fullLine.split("\\|");
                     if (line.length != 7) {
-                        logger.error("The data format is invalid. Expected 7 columns, got {}", line.length);
+                        logger.warn("The data format is invalid. Expected 7 columns, got {}", line.length);
                         return null;
                     }
                     UUID uuid;
@@ -51,7 +51,7 @@ public class FileParsingService {
                         avgSpeed = Double.parseDouble(line[5]);
                         topSpeed = Double.parseDouble(line[6]);
                     } catch (Exception e) {
-                        logger.error("Incoming data is invalid");
+                        logger.warn("Incoming data is invalid");
                         return null;
                     }
                     logger.trace("UUID: {}, ID: {}, Name: {}, Likes: {}, Transport: {}, Avg Speed: {}, Top Speed: {}", uuid, id, name, likes, transport, avgSpeed, topSpeed);
@@ -59,11 +59,11 @@ public class FileParsingService {
                     entities.add(new Entity(uuid, id, name, likes, transport, avgSpeed, topSpeed));
                 }
             } else {
-                logger.error("No data to parse");
+                logger.warn("No data to parse");
                 return null;
             }
         } catch (IOException e) {
-            logger.error("Error while parsing file", e);
+            logger.warn("warn while parsing file", e);
             return null;
         }
         return entities;
