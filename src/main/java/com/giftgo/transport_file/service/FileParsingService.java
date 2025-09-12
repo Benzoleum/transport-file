@@ -41,7 +41,7 @@ public class FileParsingService {
                     double avgSpeed;
                     double topSpeed;
 
-                    // Ideally we might want to skip invalid lines and proceed with existing ones, logging invalid entries
+                    // Ideally we might want to skip invalid lines and proceed with existing ones while logging invalid entries
                     try {
                         uuid = UUID.fromString(line[0]);
                         id = line[1];
