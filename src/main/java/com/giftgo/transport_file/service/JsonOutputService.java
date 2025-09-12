@@ -15,7 +15,7 @@ public class JsonOutputService {
     private static final Logger logger = LoggerFactory.getLogger(JsonOutputService.class);
 
     public ByteArrayResource writeJsonToByteArrayResource(List<Entity> entity) {
-        if (entity != null) {
+        if (entity != null && !entity.isEmpty()) {
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create(); // this will exclude fields without @Expose annotation
             String json = gson.toJson(entity);
             logger.trace("JSON: {}", json);
