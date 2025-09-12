@@ -63,7 +63,7 @@ public class FileParsingService {
                 return null;
             }
         } catch (IOException e) {
-            logger.warn("warn while parsing file", e);
+            logger.error("Error while parsing the file", e);
             return null;
         }
         return entities;

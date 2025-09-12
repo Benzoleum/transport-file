@@ -35,7 +35,7 @@ public class FileValidationService {
 
             // Rejecting files that are not .txt to conform with specifications
             if (!file.getOriginalFilename().endsWith(".txt")) {
-                logger.warn("Invalid file extension. Only .txt files are allowed");
+                logger.warn("Invalid file extension. Only TXT files are allowed");
                 return false;
             }
 
@@ -48,9 +48,9 @@ public class FileValidationService {
                 return false;
             }
 
-            logger.info("File name: " + fileName);
-            logger.info("Content Type: " + contentType);
-            logger.info("File size: " + fileSize);
+            logger.info("File name: {}", fileName);
+            logger.info("Content Type: {}", contentType);
+            logger.info("File size: {}", fileSize);
             logger.info("File is valid");
         } else {
             logger.info("Skipping file validation");

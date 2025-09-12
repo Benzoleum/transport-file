@@ -53,5 +53,4 @@ public class ApplicationOrchestratorService {
             throw new EmptyInputFileException("Received empty file");
         }
     }
-
 }

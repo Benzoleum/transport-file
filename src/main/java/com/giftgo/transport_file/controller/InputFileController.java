@@ -35,12 +35,10 @@ public class InputFileController {
 
         try {
             resource = applicationOrchestratorService.processFile(file);
-        } catch (EmptyInputFileException e) {
+        } catch (EmptyInputFileException | InvalidDataInFileException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (InvalidFileReceivedException e) {
             return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(e.getMessage());
-        } catch (InvalidDataInFileException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (WritingToJsonException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         } catch (Exception e) {
