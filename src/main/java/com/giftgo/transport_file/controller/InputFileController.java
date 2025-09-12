@@ -1,5 +1,9 @@
 package com.giftgo.transport_file.controller;
 
+import com.giftgo.transport_file.exceptions.EmptyInputFileException;
+import com.giftgo.transport_file.exceptions.InvalidDataInFileException;
+import com.giftgo.transport_file.exceptions.InvalidFileReceivedException;
+import com.giftgo.transport_file.exceptions.WritingToJsonException;
 import com.giftgo.transport_file.service.ApplicationOrchestratorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +31,19 @@ public class InputFileController {
     @PostMapping("/api/v1/upload")
     public ResponseEntity<?> receiveInputTxt(@RequestParam("inputFile") MultipartFile file) {
         logger.info("Received file");
-        ByteArrayResource resource = applicationOrchestratorService.processFile(file);
+        ByteArrayResource resource = null;
+
+        try {
+            resource = applicationOrchestratorService.processFile(file);
+        } catch (EmptyInputFileException | InvalidDataInFileException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (InvalidFileReceivedException e) {
+            return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(e.getMessage());
+        } catch (WritingToJsonException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body(e.getMessage());
+        }
 
         if (resource != null) {
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=OutcomeFile.json").contentLength(resource.contentLength()).body(resource);

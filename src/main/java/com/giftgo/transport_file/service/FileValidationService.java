@@ -29,13 +29,13 @@ public class FileValidationService {
             if (file.getContentType() != null && file.getContentType().equals("text/plain")) {
                 contentType = file.getContentType();
             } else {
-                logger.error("Content type is not specified or not supported");
+                logger.warn("Content type is not specified or not supported");
                 return false;
             }
 
             // Rejecting files that are not .txt to conform with specifications
             if (!file.getOriginalFilename().endsWith(".txt")) {
-                logger.error("Invalid file extension. Only .txt files are allowed");
+                logger.warn("Invalid file extension. Only TXT files are allowed");
                 return false;
             }
 
@@ -44,13 +44,13 @@ public class FileValidationService {
             if (file.getSize() != 0 && file.getSize() < 50000000) {
                 fileSize = file.getSize();
             } else {
-                logger.error("Empty file or exceeds the file size limit");
+                logger.warn("Empty file or exceeds the file size limit");
                 return false;
             }
 
-            logger.info("File name: " + fileName);
-            logger.info("Content Type: " + contentType);
-            logger.info("File size: " + fileSize);
+            logger.info("File name: {}", fileName);
+            logger.info("Content Type: {}", contentType);
+            logger.info("File size: {}", fileSize);
             logger.info("File is valid");
         } else {
             logger.info("Skipping file validation");
