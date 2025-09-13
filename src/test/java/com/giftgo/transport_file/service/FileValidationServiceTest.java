@@ -1,12 +1,15 @@
 package com.giftgo.transport_file.service;
 
+import com.giftgo.transport_file.exceptions.IncorrectFileTypeException;
+import com.giftgo.transport_file.exceptions.InvalidContentTypeException;
+import com.giftgo.transport_file.exceptions.InvalidFileReceivedException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FileValidationServiceTest {
     private static FileValidationService fileValidationService;
@@ -25,23 +28,24 @@ public class FileValidationServiceTest {
     }
 
     @Test
-    public void testValidIncomingFileIsValid() {
-        assertTrue(fileValidationService.incomingFileIsValid(validFile));
+    public void testValidValidateIncomingFile() {
+        assertDoesNotThrow(() -> fileValidationService.validateIncomingFile(validFile));
     }
 
     @Test
-    public void testFileWithInvalidExtension() {
-        assertFalse(fileValidationService.incomingFileIsValid(invalidExtension));
+    public void shouldThrowExceptionWhenFileHasInvalidExtension() {
+        assertThrows(IncorrectFileTypeException.class, () -> fileValidationService.validateIncomingFile(invalidExtension));
     }
 
     @Test
-    public void testFileWithInvalidContentType() {
-        assertFalse(fileValidationService.incomingFileIsValid(invalidContentType));
+    public void shouldThrowExceptionWhenFileHasInvalidContentType() {
+        assertThrows(InvalidContentTypeException.class, () -> fileValidationService.validateIncomingFile(invalidContentType));
+
     }
 
     @Test
-    public void testFileWithTooLargeContent() {
-        assertFalse(fileValidationService.incomingFileIsValid(fileTooLarge));
+    public void shouldThrowExceptionWhenFileIsTooLarge() {
+        assertThrows(InvalidFileReceivedException.class, () -> fileValidationService.validateIncomingFile(fileTooLarge));
     }
 
 }

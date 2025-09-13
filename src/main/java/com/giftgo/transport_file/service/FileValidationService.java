@@ -17,7 +17,7 @@ public class FileValidationService {
     @Value("${fileValidation:true}")
     private boolean fileValidation;
 
-    public boolean incomingFileIsValid(MultipartFile file) {
+    public void validateIncomingFile(MultipartFile file) {
         if (fileValidation) {
             logger.info("Validating file");
             String fileName = "";
@@ -57,9 +57,6 @@ public class FileValidationService {
             logger.info("File is valid");
         } else {
             logger.info("Skipping file validation");
-            return true;
         }
-
-        return true;
     }
 }
