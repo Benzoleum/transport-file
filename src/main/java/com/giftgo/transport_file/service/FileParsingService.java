@@ -1,6 +1,8 @@
 package com.giftgo.transport_file.service;
 
 import com.giftgo.transport_file.dto.Entity;
+import com.giftgo.transport_file.exceptions.EmptyInputFileException;
+import com.giftgo.transport_file.exceptions.InvalidDataInFileException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -31,7 +33,7 @@ public class FileParsingService {
                     String[] line = fullLine.split("\\|");
                     if (line.length != 7) {
                         logger.warn("The data format is invalid. Expected 7 columns, got {}", line.length);
-                        return null;
+                        throw new InvalidDataInFileException("The data format is invalid. Expected 7 columns, got " + line.length);
                     }
                     UUID uuid;
                     String id;
@@ -51,8 +53,7 @@ public class FileParsingService {
                         avgSpeed = Double.parseDouble(line[5]);
                         topSpeed = Double.parseDouble(line[6]);
                     } catch (Exception e) {
-                        logger.warn("Incoming data is invalid");
-                        return null;
+                        throw new InvalidDataInFileException("Invalid data in file, please check the input data");
                     }
                     logger.trace("UUID: {}, ID: {}, Name: {}, Likes: {}, Transport: {}, Avg Speed: {}, Top Speed: {}", uuid, id, name, likes, transport, avgSpeed, topSpeed);
                     // Create POJOs from lines in the file and add to a list for further processing
@@ -60,11 +61,11 @@ public class FileParsingService {
                 }
             } else {
                 logger.warn("No data to parse");
-                return null;
+                throw new EmptyInputFileException("The file is empty. Please check the file and try again");
             }
         } catch (IOException e) {
             logger.error("Error while parsing the file", e);
-            return null;
+            throw new RuntimeException("Error while parsing the file");
         }
         return entities;
     }
