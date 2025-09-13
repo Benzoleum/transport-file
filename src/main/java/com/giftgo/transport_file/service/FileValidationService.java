@@ -1,5 +1,8 @@
 package com.giftgo.transport_file.service;
 
+import com.giftgo.transport_file.exceptions.IncorrectFileTypeException;
+import com.giftgo.transport_file.exceptions.InvalidContentTypeException;
+import com.giftgo.transport_file.exceptions.InvalidFileReceivedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,13 +33,13 @@ public class FileValidationService {
                 contentType = file.getContentType();
             } else {
                 logger.warn("Content type is not specified or not supported");
-                return false;
+                throw new InvalidContentTypeException("The content type is not supported. Please use text/plain file");
             }
 
             // Rejecting files that are not .txt to conform with specifications
             if (!file.getOriginalFilename().endsWith(".txt")) {
                 logger.warn("Invalid file extension. Only TXT files are allowed");
-                return false;
+                throw new IncorrectFileTypeException("The file extension is not supported. Please use .txt file");
             }
 
             // Limiting the file size to 50MB. Can be increased, but file parsing logic would have to be changed to avoid CPU bottlenecks and memory issues
@@ -45,7 +48,7 @@ public class FileValidationService {
                 fileSize = file.getSize();
             } else {
                 logger.warn("Empty file or exceeds the file size limit");
-                return false;
+                throw new InvalidFileReceivedException("The file is invalid. Please check that the file is not empty and does not exceed 50MB");
             }
 
             logger.info("File name: {}", fileName);
