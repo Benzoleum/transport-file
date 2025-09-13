@@ -28,6 +28,8 @@ This application receives a file containing some data over HTTP, validates it (c
 
 `java -jar transport-file-0.0.1-SNAPSHOT.jar`
 
+* The application will be available at http://localhost:8080/api/v1/upload
+
 **If you wish to disable file validation, you can set validateFile to false in application.yml**
 
 * A sample request can be made with the following curl command:
