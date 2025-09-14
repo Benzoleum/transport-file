@@ -57,11 +57,9 @@ public class InputControllerTest {
     void testUnsupportedMediaType() throws Exception {
 
         doThrow(new InvalidFileReceivedException("bad file")).when(orchestrator).processFile(org.mockito.ArgumentMatchers.any());
-        mockMvc.perform(multipart("/api/v1/upload").file(invalidExtension))
-                .andExpect(status().isUnsupportedMediaType());
+        mockMvc.perform(multipart("/api/v1/upload").file(invalidExtension)).andExpect(status().isUnsupportedMediaType());
 
         doThrow(new InvalidContentTypeException("bad type")).when(orchestrator).processFile(org.mockito.ArgumentMatchers.any());
-        mockMvc.perform(multipart("/api/v1/upload").file(invalidExtension))
-                .andExpect(status().isUnsupportedMediaType());
+        mockMvc.perform(multipart("/api/v1/upload").file(invalidExtension)).andExpect(status().isUnsupportedMediaType());
     }
 }

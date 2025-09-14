@@ -4,7 +4,6 @@ import com.giftgo.transport_file.dto.Entity;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -28,7 +27,7 @@ public class JsonOutputServiceTest {
     }
 
     @Test
-    public void testValidEntityListToJson() throws IOException {
+    public void testValidEntityListToJson() {
         assertTrue(jsonOutputService.writeJsonToByteArrayResource(validEntityList).contentLength() != 0);
     }
 

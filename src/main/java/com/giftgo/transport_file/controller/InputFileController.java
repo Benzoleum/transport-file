@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class InputFileController {
     private static final Logger logger = LoggerFactory.getLogger(InputFileController.class);
-    private ApplicationOrchestratorService applicationOrchestratorService;
+    private final ApplicationOrchestratorService applicationOrchestratorService;
 
     @Autowired
     public InputFileController(ApplicationOrchestratorService applicationOrchestratorService) {
