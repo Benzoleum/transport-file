@@ -44,18 +44,17 @@ public class InputControllerTest {
     }
 
     @Test
-    void upload_badRequestMapped() throws Exception {
+    void testBadRequest() throws Exception {
 
         doThrow(new EmptyInputFileException("empty")).when(orchestrator).processFile(org.mockito.ArgumentMatchers.any());
         mockMvc.perform(multipart("/api/v1/upload").file(emptyFile)).andExpect(status().isBadRequest());
 
-        // Also test InvalidDataInFileException
         doThrow(new InvalidDataInFileException("invalid")).when(orchestrator).processFile(org.mockito.ArgumentMatchers.any());
         mockMvc.perform(multipart("/api/v1/upload").file(emptyFile)).andExpect(status().isBadRequest());
     }
 
     @Test
-    void upload_unsupportedMediaTypeMapped() throws Exception {
+    void testUnsupportedMediaType() throws Exception {
 
         doThrow(new InvalidFileReceivedException("bad file")).when(orchestrator).processFile(org.mockito.ArgumentMatchers.any());
         mockMvc.perform(multipart("/api/v1/upload").file(invalidExtension))
