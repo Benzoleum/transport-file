@@ -2,6 +2,8 @@ package com.giftgo.transport_file.controller;
 
 import com.giftgo.transport_file.exceptions.*;
 import com.giftgo.transport_file.service.ApplicationOrchestratorService;
+import com.giftgo.transport_file.service.IpValidationService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +17,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @RestController
 public class InputFileController {
     private static final Logger logger = LoggerFactory.getLogger(InputFileController.class);
     private final ApplicationOrchestratorService applicationOrchestratorService;
+    private final IpValidationService ipValidationService;
 
     @Autowired
-    public InputFileController(ApplicationOrchestratorService applicationOrchestratorService) {
+    public InputFileController(ApplicationOrchestratorService applicationOrchestratorService, IpValidationService ipValidationService) {
         this.applicationOrchestratorService = applicationOrchestratorService;
+        this.ipValidationService = ipValidationService;
     }
 
     @PostMapping("/api/v1/upload")
-    public ResponseEntity<?> receiveInputTxt(@RequestParam("inputFile") MultipartFile file) {
+    public ResponseEntity<?> receiveInputTxt(@RequestParam("inputFile") MultipartFile file, HttpServletRequest request) throws IOException, InterruptedException {
+        ipValidationService.validateIpAddress(request);
+
         logger.info("Received file");
         ByteArrayResource resource = null;
 
