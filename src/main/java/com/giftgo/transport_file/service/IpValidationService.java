@@ -27,7 +27,8 @@ public class IpValidationService {
 
         HttpRequest outgoingRequest = HttpRequest.newBuilder()
 //                .uri(URI.create("http://ip-api.com/json/" + incomingRequest.getRemoteAddr()tRemoteAddr() + "?fields=1098242"))
-                .uri(URI.create("http://ip-api.com/json/102.129.228.0?fields=1098242")) // hardcoding IP for testing
+//                .uri(URI.create("http://ip-api.com/json/102.129.228.0?fields=1098242")) // hardcoding IP for testing (originating from UK)
+                .uri(URI.create("http://ip-api.com/json/1.178.180.0?fields=1098242")) // hardcoding IP for testing (originating from US)
                 .timeout(Duration.ofSeconds(10)).header("Accept", "application/json").GET().build();
 
         HttpResponse<String> response = client.send(outgoingRequest, HttpResponse.BodyHandlers.ofString());

@@ -33,27 +33,30 @@ public class InputFileController {
 
     @PostMapping("/api/v1/upload")
     public ResponseEntity<?> receiveInputTxt(@RequestParam("inputFile") MultipartFile file, HttpServletRequest request) throws IOException, InterruptedException {
-        ipValidationService.validateIpAddress(request);
+        if (ipValidationService.validateIpAddress(request)) {
 
-        logger.info("Received file");
-        ByteArrayResource resource = null;
+            logger.info("Received file");
+            ByteArrayResource resource = null;
 
-        try {
-            resource = applicationOrchestratorService.processFile(file);
-        } catch (EmptyInputFileException | InvalidDataInFileException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (InvalidFileReceivedException | InvalidContentTypeException e) {
-            return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(e.getMessage());
-        } catch (WritingToJsonException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body(e.getMessage());
-        }
+            try {
+                resource = applicationOrchestratorService.processFile(file);
+            } catch (EmptyInputFileException | InvalidDataInFileException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            } catch (InvalidFileReceivedException | InvalidContentTypeException e) {
+                return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(e.getMessage());
+            } catch (WritingToJsonException e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body(e.getMessage());
+            }
 
-        if (resource != null) {
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=OutcomeFile.json").contentLength(resource.contentLength()).body(resource);
+            if (resource != null) {
+                return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=OutcomeFile.json").contentLength(resource.contentLength()).body(resource);
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON).body("Error while processing file");
+            }
         } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON).body("Error while processing file");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("The request is coming from an unauthorized IP");
         }
     }
 }
