@@ -1,6 +1,6 @@
 package com.giftgo.transport_file.service;
 
-import com.giftgo.transport_file.dto.IncomingRequest;
+import com.giftgo.transport_file.dto.IncomingRequestDto;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ public class IpValidationService {
         logger.info("IP validation request status {}", response.statusCode());
         logger.trace("IP validation response: {}", response.body());
 
-        IncomingRequest incomingRequestDto = buildIncomingRequestFromJson(response.body());
+        IncomingRequestDto incomingRequestDto = buildIncomingRequestFromJson(response.body());
         if (incomingRequestDto.getStatus().equalsIgnoreCase("success")) {
             if (!incomingRequestDto.getCountryCode().equalsIgnoreCase("CN")
                     && !incomingRequestDto.getCountryCode().equalsIgnoreCase("US")
@@ -53,23 +53,23 @@ public class IpValidationService {
     }
 
 
-    public IncomingRequest buildIncomingRequestFromJson(String json) {
+    public IncomingRequestDto buildIncomingRequestFromJson(String json) {
         Gson gson = new Gson();
         HashMap<String, String> map = gson.fromJson(json, HashMap.class);
-        IncomingRequest incomingRequest = new IncomingRequest();
+        IncomingRequestDto incomingRequestDto = new IncomingRequestDto();
 
         if (map.containsKey("status")) {
-            incomingRequest.setStatus(map.get("status"));
+            incomingRequestDto.setStatus(map.get("status"));
         }
 
         if (map.containsKey("countryCode")) {
-            incomingRequest.setCountryCode(map.get("countryCode"));
+            incomingRequestDto.setCountryCode(map.get("countryCode"));
         }
 
         if (map.containsKey("isp")) {
-            incomingRequest.setIsp(map.get("isp"));
+            incomingRequestDto.setIsp(map.get("isp"));
         }
 
-        return incomingRequest;
+        return incomingRequestDto;
     }
 }

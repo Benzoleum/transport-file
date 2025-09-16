@@ -1,6 +1,6 @@
 package com.giftgo.transport_file.service;
 
-import com.giftgo.transport_file.dto.Entity;
+import com.giftgo.transport_file.dto.EntityDto;
 import com.giftgo.transport_file.exceptions.EmptyInputFileException;
 import com.giftgo.transport_file.exceptions.InvalidDataInFileException;
 import org.slf4j.Logger;
@@ -20,9 +20,9 @@ import java.util.UUID;
 public class FileParsingService {
     private static final Logger logger = LoggerFactory.getLogger(FileParsingService.class);
 
-    public List<Entity> parseIncomingFile(MultipartFile file) {
+    public List<EntityDto> parseIncomingFile(MultipartFile file) {
         logger.info("Parsing file");
-        ArrayList<Entity> entities = new ArrayList<>();
+        ArrayList<EntityDto> entities = new ArrayList<>();
         try {
             InputStream inputStream = file.getInputStream();
             inputStream.read();
@@ -57,7 +57,7 @@ public class FileParsingService {
                     }
                     logger.trace("UUID: {}, ID: {}, Name: {}, Likes: {}, Transport: {}, Avg Speed: {}, Top Speed: {}", uuid, id, name, likes, transport, avgSpeed, topSpeed);
                     // Create POJOs from lines in the file and add to a list for further processing
-                    entities.add(new Entity(uuid, id, name, likes, transport, avgSpeed, topSpeed));
+                    entities.add(new EntityDto(uuid, id, name, likes, transport, avgSpeed, topSpeed));
                 }
             } else {
                 logger.warn("No data to parse");

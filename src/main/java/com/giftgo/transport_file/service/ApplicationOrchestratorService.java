@@ -1,6 +1,6 @@
 package com.giftgo.transport_file.service;
 
-import com.giftgo.transport_file.dto.Entity;
+import com.giftgo.transport_file.dto.EntityDto;
 import com.giftgo.transport_file.exceptions.EmptyInputFileException;
 import com.giftgo.transport_file.exceptions.InvalidDataInFileException;
 import com.giftgo.transport_file.exceptions.WritingToJsonException;
@@ -30,7 +30,7 @@ public class ApplicationOrchestratorService {
     public ByteArrayResource processFile(MultipartFile file) {
         if (file != null) {
             fileValidationService.validateIncomingFile(file);
-            List<Entity> entities = fileParsingService.parseIncomingFile(file);
+            List<EntityDto> entities = fileParsingService.parseIncomingFile(file);
             if (entities != null) {
                 ByteArrayResource resource = jsonOutputService.writeJsonToByteArrayResource(entities);
                 if (resource != null) {

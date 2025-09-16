@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 
-public class IncomingRequest {
+public class IncomingRequestDto {
 
     private String status;
     private String countryCode;

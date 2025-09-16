@@ -12,7 +12,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Entity {
+public class EntityDto {
 
     private UUID id;
     private String uuid;

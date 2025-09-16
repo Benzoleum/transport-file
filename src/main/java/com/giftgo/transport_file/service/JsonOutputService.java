@@ -1,6 +1,6 @@
 package com.giftgo.transport_file.service;
 
-import com.giftgo.transport_file.dto.Entity;
+import com.giftgo.transport_file.dto.EntityDto;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
@@ -8,17 +8,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
 
 @Service
 public class JsonOutputService {
     private static final Logger logger = LoggerFactory.getLogger(JsonOutputService.class);
 
-    public ByteArrayResource writeJsonToByteArrayResource(List<Entity> entity) {
-        if (entity != null && !entity.isEmpty()) {
+    public ByteArrayResource writeJsonToByteArrayResource(List<EntityDto> entityDto) {
+        if (entityDto != null && !entityDto.isEmpty()) {
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create(); // this will exclude fields without @Expose annotation
-            String json = gson.toJson(entity);
+            String json = gson.toJson(entityDto);
             logger.trace("JSON: {}", json);
             byte[] bytes = json.getBytes();
             ByteArrayResource resource = new ByteArrayResource(bytes);
