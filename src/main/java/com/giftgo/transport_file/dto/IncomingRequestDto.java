@@ -19,5 +19,5 @@ public class IncomingRequestDto {
     private String ip;
     private String countryCode;
     private String isp;
-    private String timeToCompleteRequest;
+    private long timeToCompleteRequest;
 }

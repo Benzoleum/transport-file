@@ -84,8 +84,8 @@ public class IpValidationService {
         incomingRequestDto.setIp(request.getRemoteAddr());
 
         //TODO improve logic to cater for below
-        incomingRequestDto.setTimeToCompleteRequest("TODO");
-        incomingRequestDto.setStatus("TODO");
+        incomingRequestDto.setTimeToCompleteRequest(0L);
+        incomingRequestDto.setStatus("");
 
         requestsRepository.save(incomingRequestDto);
         return incomingRequestDto;
