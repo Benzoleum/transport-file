@@ -1,10 +1,12 @@
 package com.giftgo.transport_file.service;
 
+import com.giftgo.transport_file.db.RequestsRepository;
 import com.giftgo.transport_file.dto.IncomingRequestDto;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -14,11 +16,17 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.UUID;
 
 @Service
 public class IpValidationService {
     private static final Logger logger = LoggerFactory.getLogger(IpValidationService.class);
+    private final RequestsRepository requestsRepository;
 
+    @Autowired
+    public IpValidationService(RequestsRepository requestsRepository) {
+        this.requestsRepository = requestsRepository;
+    }
     // http://ip-api.com/json/24.48.0.1
     // http://ip-api.com/json/{query}?fields=1098242
     public boolean validateIpAddress(HttpServletRequest incomingRequest) throws IOException, InterruptedException {
@@ -35,7 +43,7 @@ public class IpValidationService {
         logger.info("IP validation request status {}", response.statusCode());
         logger.trace("IP validation response: {}", response.body());
 
-        IncomingRequestDto incomingRequestDto = buildIncomingRequestFromJson(response.body());
+        IncomingRequestDto incomingRequestDto = createIncomingRequestDtoAndSave(response.body(), incomingRequest);
         if (incomingRequestDto.getStatus().equalsIgnoreCase("success")) {
             if (!incomingRequestDto.getCountryCode().equalsIgnoreCase("CN")
                     && !incomingRequestDto.getCountryCode().equalsIgnoreCase("US")
@@ -53,7 +61,7 @@ public class IpValidationService {
     }
 
 
-    public IncomingRequestDto buildIncomingRequestFromJson(String json) {
+    public IncomingRequestDto createIncomingRequestDtoAndSave(String json, HttpServletRequest request) {
         Gson gson = new Gson();
         HashMap<String, String> map = gson.fromJson(json, HashMap.class);
         IncomingRequestDto incomingRequestDto = new IncomingRequestDto();
@@ -70,6 +78,16 @@ public class IpValidationService {
             incomingRequestDto.setIsp(map.get("isp"));
         }
 
+        incomingRequestDto.setRequestId(UUID.randomUUID());
+        incomingRequestDto.setRequestUri(request.getRequestURI());
+        incomingRequestDto.setTimestamp(System.currentTimeMillis());
+        incomingRequestDto.setIp(request.getRemoteAddr());
+
+        //TODO improve logic to cater for below
+        incomingRequestDto.setTimeToCompleteRequest("TODO");
+        incomingRequestDto.setStatus("TODO");
+
+        requestsRepository.save(incomingRequestDto);
         return incomingRequestDto;
     }
 }
